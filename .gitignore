@@ -1,7 +1,11 @@
-*.env
+/frontend/node_modules
+/frontend/dist
+/frontend/out-tsc
+/frontend/.angular
+/frontend/.vscode
+/frontend/package-lock.json
+/frontend/.env
 /backend/CarWorkshopAPI/appsettings.json
 .vs/
 bin/
 obj/
-node_modules/
-dist/
