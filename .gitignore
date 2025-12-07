@@ -1,10 +1,10 @@
-/frontend/node_modules
-/frontend/dist
-/frontend/out-tsc
-/frontend/.angular
-/frontend/.vscode
-/frontend/package-lock.json
-/frontend/.env
+/frontend/car-workshop-client/node_modules
+/frontend/car-workshop-client/dist
+/frontend/car-workshop-client/out-tsc
+/frontend/car-workshop-client/.angular
+/frontend/car-workshop-client/.vscode
+/frontend/car-workshop-client/package-lock.json
+/frontend/car-workshop-client/.env
 /backend/CarWorkshopAPI/appsettings.json
 .vs/
 bin/
