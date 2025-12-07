@@ -4,7 +4,7 @@
 /frontend/car-workshop-client/.angular
 /frontend/car-workshop-client/.vscode
 /frontend/car-workshop-client/package-lock.json
-/frontend/car-workshop-client/.env
+/frontend/car-workshop-client//src/environments/*
 /backend/CarWorkshopAPI/appsettings.json
 .vs/
 bin/
