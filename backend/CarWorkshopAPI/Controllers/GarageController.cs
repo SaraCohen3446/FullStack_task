@@ -15,7 +15,7 @@ namespace CarWorkshopAPI.Controllers
         private readonly HttpClient _httpClient;
         private readonly GarageService _garageService;
 
-        // Constructor injecting HttpClient and GarageService
+        // constructor injecting HttpClient and GarageService
         public GarageController(HttpClient httpClient, GarageService garageService)
         {
             _httpClient = httpClient;
@@ -29,7 +29,7 @@ namespace CarWorkshopAPI.Controllers
             var url = "https://data.gov.il/api/3/action/datastore_search?resource_id=bb68386a-a331-4bbc-b668-bba2766d517d&limit=5";
             var response = await _httpClient.GetStringAsync(url);
 
-            // Parse JSON to list of Garage
+            // parse JSON to list of Garage
             var jsonDoc = JsonDocument.Parse(response);
             var records = jsonDoc.RootElement.GetProperty("result").GetProperty("records");
 
@@ -60,8 +60,20 @@ namespace CarWorkshopAPI.Controllers
                 await _garageService.SaveGaragesAsync(garages);
             }
 
-            // Return saved garages
+            // return saved garages
             return Ok(garages);
+        }
+
+        // POST api/garage/add
+        [HttpPost("add")]
+        public async Task<IActionResult> AddGarage([FromBody] Garage newGarage)
+        {
+            if (newGarage == null)
+                return BadRequest("garage is null");
+
+            await _garageService.SaveGaragesAsync(new List<Garage> { newGarage });
+
+            return Ok(new { message = "garage added successfully" });
         }
     }
 }
