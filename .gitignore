@@ -1,4 +1,5 @@
 *.env
+/backend/CarWorkshopAPI/appsettings.json
 .vs/
 bin/
 obj/
