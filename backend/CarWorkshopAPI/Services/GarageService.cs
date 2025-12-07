@@ -16,7 +16,7 @@ namespace CarWorkshopAPI.Services
         {
             var client = new MongoClient(config["MongoDB:ConnectionString"]);
             var database = client.GetDatabase(config["MongoDB:DatabaseName"]);
-            _garages = database.GetCollection<Garage>("Garages"); // G גדולה
+            _garages = database.GetCollection<Garage>("Garages");
         }
 
         // save garages to mongodb

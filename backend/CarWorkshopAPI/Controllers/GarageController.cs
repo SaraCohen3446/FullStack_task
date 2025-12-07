@@ -61,7 +61,9 @@ namespace CarWorkshopAPI.Controllers
                     await _garageService.SaveGaragesAsync(garages);
 
                 // return saved garages
-                return Ok(garages);
+                var garagesFromDb = await _garageService.GetAllGaragesAsync();
+                return Ok(garagesFromDb);
+
             }
             catch (HttpRequestException ex)
             {
