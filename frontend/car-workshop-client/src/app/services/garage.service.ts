@@ -11,14 +11,17 @@ export class GarageService {
 
   constructor(private http: HttpClient) {}
 
+  // get list of garages from government api
   getGaragesFromGov(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/fetchFromAPI`);
   }
 
+  // get garages already saved in our database
   getSavedGarages(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/saved`);
   }
 
+  // add new garages to the database
   addGarages(garages: any[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, garages);
   }

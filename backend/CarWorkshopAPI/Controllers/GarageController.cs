@@ -20,31 +20,9 @@ namespace CarWorkshopAPI.Controllers
             _httpClient = httpClient;
             _garageService = garageService;
         }
-        // add selected garage to database if not exists
-        [HttpPost("addSelected")]
-        public async Task<IActionResult> AddSelectedGarage([FromBody] Garage selectedGarage)
-        {
-            try
-            {
-                if (selectedGarage == null)
-                    return BadRequest("Garage is null");
+       
 
-                var existingGarages = await _garageService.GetAllGaragesAsync();
-                bool exists = existingGarages.Exists(g => g.ShemMosah == selectedGarage.ShemMosah);
-
-                if (exists)
-                    return BadRequest("Garage already exists in database");
-
-                await _garageService.SaveGaragesAsync(new List<Garage> { selectedGarage });
-                return Ok(new { message = "Selected garage added successfully" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Server error: {ex.Message}");
-            }
-        }
-
-        /// fetch a few garages from external government api
+        /// fetch garages from external government API
         [HttpGet("fetchFromAPI")]
         public async Task<IActionResult> FetchGaragesFromAPI()
         {
@@ -90,7 +68,7 @@ namespace CarWorkshopAPI.Controllers
         }
 
 
-        /// get all garages saved in database
+        /// get all garages from database
         [HttpGet("saved")]
         public async Task<IActionResult> GetSavedGarages()
         {
