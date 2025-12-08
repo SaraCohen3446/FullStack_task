@@ -1,33 +1,88 @@
-<h1>רשימת מוסכים</h1>
+<h1>Garage List</h1>
 
 <mat-form-field appearance="fill">
-  <mat-label>סוג מוסך</mat-label>
-  <mat-select multiple [(value)]="selectedGarages">
-    <mat-option *ngFor="let garage of garages" [value]="garage">
-      {{ garage.sugMosah }}
+  <mat-label>Select Garages</mat-label>
+  <mat-select multiple [(ngModel)]="selectedGarages">
+    <mat-option *ngFor="let garage of garagesFromGov" [value]="garage">
+      {{ garage.shemMosah }}
     </mat-option>
   </mat-select>
 </mat-form-field>
 
-<button mat-raised-button color="primary">הוספה</button>
+<button mat-raised-button color="primary" (click)="addSelectedGarages()">Add Selected Garages</button>
 
-<table mat-table [dataSource]="garages" class="mat-elevation-z8">
+<p *ngIf="message">{{ message }}</p>
+
+<h2>Saved Garages</h2>
+<p *ngIf="savedGarages.length === 0">No garages added yet.</p>
+
+<table mat-table [dataSource]="savedGarages" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="misparMosah">
+    <th mat-header-cell *matHeaderCellDef> Mispar Mosah </th>
+    <td mat-cell *matCellDef="let g"> {{ g.misparMosah }} </td>
+  </ng-container>
 
   <ng-container matColumnDef="shemMosah">
-    <th mat-header-cell *matHeaderCellDef> שם מוסך </th>
-    <td mat-cell *matCellDef="let garage"> {{ garage.shemMosah }} </td>
+    <th mat-header-cell *matHeaderCellDef> Garage Name </th>
+    <td mat-cell *matCellDef="let g"> {{ g.shemMosah }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="codSugMosah">
+    <th mat-header-cell *matHeaderCellDef> Cod Sug Mosah </th>
+    <td mat-cell *matCellDef="let g"> {{ g.codSugMosah }} </td>
   </ng-container>
 
   <ng-container matColumnDef="sugMosah">
-    <th mat-header-cell *matHeaderCellDef> סוג מוסך </th>
-    <td mat-cell *matCellDef="let garage"> {{ garage.sugMosah }} </td>
+    <th mat-header-cell *matHeaderCellDef> Garage Type </th>
+    <td mat-cell *matCellDef="let g"> {{ g.sugMosah }} </td>
   </ng-container>
 
   <ng-container matColumnDef="ktovet">
-    <th mat-header-cell *matHeaderCellDef> כתובת </th>
-    <td mat-cell *matCellDef="let garage"> {{ garage.ktovet }} </td>
+    <th mat-header-cell *matHeaderCellDef> Address </th>
+    <td mat-cell *matCellDef="let g"> {{ g.ktovet }} </td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="['shemMosah','sugMosah','ktovet']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['shemMosah','sugMosah','ktovet'];"></tr>
+  <ng-container matColumnDef="yishuv">
+    <th mat-header-cell *matHeaderCellDef> City </th>
+    <td mat-cell *matCellDef="let g"> {{ g.yishuv }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="telephone">
+    <th mat-header-cell *matHeaderCellDef> Telephone </th>
+    <td mat-cell *matCellDef="let g"> {{ g.telephone }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="mikud">
+    <th mat-header-cell *matHeaderCellDef> Zip Code </th>
+    <td mat-cell *matCellDef="let g"> {{ g.mikud }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="codMiktzoa">
+    <th mat-header-cell *matHeaderCellDef> Cod Miktzoa </th>
+    <td mat-cell *matCellDef="let g"> {{ g.codMiktzoa }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="miktzoa">
+    <th mat-header-cell *matHeaderCellDef> Profession </th>
+    <td mat-cell *matCellDef="let g"> {{ g.miktzoa }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="menahelMiktzoa">
+    <th mat-header-cell *matHeaderCellDef> Manager </th>
+    <td mat-cell *matCellDef="let g"> {{ g.menahelMiktzoa }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="rashamHavarot">
+    <th mat-header-cell *matHeaderCellDef> Company Registration </th>
+    <td mat-cell *matCellDef="let g"> {{ g.rashamHavarot }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="testime">
+    <th mat-header-cell *matHeaderCellDef> Test Time </th>
+    <td mat-cell *matCellDef="let g"> {{ g.testime }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

@@ -7,16 +7,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class GarageService {
-
   private apiUrl = `${environment.apiUrl}/Garage`;
 
   constructor(private http: HttpClient) {}
 
-  getGarages(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/fetch`);
+  getGaragesFromGov(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/fetchFromAPI`);
   }
 
-  addGarage(garage: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, garage);
+  getSavedGarages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/saved`);
+  }
+
+  addGarages(garages: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/add`, garages);
   }
 }

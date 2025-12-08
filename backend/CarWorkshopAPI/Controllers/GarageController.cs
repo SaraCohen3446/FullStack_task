@@ -15,23 +15,44 @@ namespace CarWorkshopAPI.Controllers
         private readonly HttpClient _httpClient;
         private readonly GarageService _garageService;
 
-        // constructor injecting HttpClient and GarageService
         public GarageController(HttpClient httpClient, GarageService garageService)
         {
             _httpClient = httpClient;
             _garageService = garageService;
         }
+        // add selected garage to database if not exists
+        [HttpPost("addSelected")]
+        public async Task<IActionResult> AddSelectedGarage([FromBody] Garage selectedGarage)
+        {
+            try
+            {
+                if (selectedGarage == null)
+                    return BadRequest("Garage is null");
 
-        // get garages from external api and save to mongodb
-        [HttpGet("fetch")]
-        public async Task<IActionResult> FetchGarages()
+                var existingGarages = await _garageService.GetAllGaragesAsync();
+                bool exists = existingGarages.Exists(g => g.ShemMosah == selectedGarage.ShemMosah);
+
+                if (exists)
+                    return BadRequest("Garage already exists in database");
+
+                await _garageService.SaveGaragesAsync(new List<Garage> { selectedGarage });
+                return Ok(new { message = "Selected garage added successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+
+        /// fetch a few garages from external government api
+        [HttpGet("fetchFromAPI")]
+        public async Task<IActionResult> FetchGaragesFromAPI()
         {
             try
             {
                 var url = "https://data.gov.il/api/3/action/datastore_search?resource_id=bb68386a-a331-4bbc-b668-bba2766d517d&limit=5";
                 var response = await _httpClient.GetStringAsync(url);
 
-                // parse JSON to list of Garage
                 var jsonDoc = JsonDocument.Parse(response);
                 var records = jsonDoc.RootElement.GetProperty("result").GetProperty("records");
 
@@ -56,44 +77,61 @@ namespace CarWorkshopAPI.Controllers
                     });
                 }
 
-                // save to mongodb
-                if (garages.Count > 0)
-                    await _garageService.SaveGaragesAsync(garages);
-
-                // return saved garages
-                var garagesFromDb = await _garageService.GetAllGaragesAsync();
-                return Ok(garagesFromDb);
-
+                return Ok(garages);
             }
             catch (HttpRequestException ex)
             {
-                // error from external api
-                return StatusCode(503, $"external api error: {ex.Message}");
+                return StatusCode(503, $"External API error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // general server error
-                return StatusCode(500, $"server error: {ex.Message}");
+                return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
 
-        // add a new garage to mongodb
-        [HttpPost("add")]
-        public async Task<IActionResult> AddGarage([FromBody] Garage newGarage)
+
+        /// get all garages saved in database
+        [HttpGet("saved")]
+        public async Task<IActionResult> GetSavedGarages()
         {
             try
             {
-                if (newGarage == null)
-                    return BadRequest("garage is null");
-
-                await _garageService.SaveGaragesAsync(new List<Garage> { newGarage });
-                return Ok(new { message = "garage added successfully" });
+                var garages = await _garageService.GetAllGaragesAsync();
+                return Ok(garages);
             }
             catch (Exception ex)
             {
-                // general server error
-                return StatusCode(500, $"server error: {ex.Message}");
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+
+        /// add a new garage to database
+        [HttpPost("add")]
+        public async Task<IActionResult> AddSelectedGarages([FromBody] List<Garage> selectedGarages)
+        {
+            Console.WriteLine($"Received {selectedGarages.Count} garages");
+
+            try
+            {
+                if (selectedGarages == null || selectedGarages.Count == 0)
+                    return BadRequest("No garages provided");
+
+                var existingGarages = await _garageService.GetAllGaragesAsync();
+                var garagesToAdd = selectedGarages
+                    .Where(g => !existingGarages.Any(e => e.MisparMosah == g.MisparMosah))
+                    .ToList();
+
+                if (garagesToAdd.Count == 0)
+                    return Ok(new { message = "All selected garages already exist", addedCount = 0 });
+
+                await _garageService.SaveGaragesAsync(garagesToAdd);
+                return Ok(new { message = $"{garagesToAdd.Count} garages added successfully", addedCount = garagesToAdd.Count });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
     }
-}
+    }
+
