@@ -35,6 +35,7 @@ export class HomeComponent implements OnInit {
         this.loadGaragesFromGov(); // load garages from gov API
     }
 
+
     // fetch garages from gov API and remove duplicates name
     loadGaragesFromGov() {
         this.isLoading = true;
